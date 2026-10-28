@@ -1,6 +1,6 @@
 """Module implementation."""
 import torch
-from typing import Optional, List, Callable
+from typing import Optional, List, Callable, Union
 from .kv_cache import KVCache
 from .stop_criteria import StopCriteria
 
@@ -10,7 +10,7 @@ def autoregressive_generate(
     model: torch.nn.Module,
     input_ids: torch.Tensor,
     max_new_tokens: int = 20,
-    eos_token_id: Optional[int] = None,
+    eos_token_id: Optional[Union[int, List[int]]] = None,
     sampler_fn: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
     use_cache: bool = False,
 ) -> torch.Tensor:
@@ -21,7 +21,6 @@ def autoregressive_generate(
     generated = input_ids.clone()
     if hasattr(model, "eval"):
         model.eval()
-    batch_size = generated.size(0)
     stop_criteria = StopCriteria(max_length=generated.size(1) + max_new_tokens, eos_token_id=eos_token_id)
 
     num_layers = getattr(

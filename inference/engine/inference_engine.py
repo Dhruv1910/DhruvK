@@ -60,6 +60,7 @@ class InferenceEngine:
             self.model_config = ModelConfig(d_model=768, vocab_size=50257)
 
         self.inference_config = inference_config or InferenceConfig()
+        self.inference_config.validate()
         self.device = torch.device(device) if device else torch.device("cpu")
 
         if model is not None:
@@ -94,7 +95,9 @@ class InferenceEngine:
         self._prepare_model()
 
         max_tokens = max_new_tokens if max_new_tokens is not None else self.inference_config.max_new_tokens
-        if max_tokens <= 0:
+        if max_tokens < 0:
+            raise ValueError(f"max_new_tokens must be non-negative, got {max_tokens}")
+        if max_tokens == 0:
             return list(prompt_tokens)
 
         temp = temperature if temperature is not None else self.inference_config.temperature

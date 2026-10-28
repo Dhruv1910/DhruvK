@@ -2,7 +2,6 @@
 import torch
 import torch.nn.functional as F
 from typing import Optional, List, Union
-from .temperature import apply_temperature
 from .top_k import apply_top_k
 from .top_p import apply_top_p
 from .repetition_penalty import apply_repetition_penalty
@@ -40,7 +39,7 @@ class Sampler:
         if self.temperature <= 0:
             return torch.argmax(logits, dim=-1)
         if self.temperature != 1.0:
-            logits = apply_temperature(logits, temperature=self.temperature)
+            logits = logits / self.temperature
 
         # 2. Top-K
         if self.top_k > 0:

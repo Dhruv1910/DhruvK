@@ -30,9 +30,9 @@ def autoregressive_generate(
     )
     kv_cache = KVCache(num_layers=num_layers) if use_cache else None
 
-    for _ in range(max_new_tokens):
+    for step in range(max_new_tokens):
         if kv_cache is not None:
-            model_inputs = generated if kv_cache.get_seq_length(0) == 0 else generated[:, -1:]
+            model_inputs = generated if step == 0 else generated[:, -1:]
             logits = model(model_inputs, kv_cache=kv_cache)
         else:
             logits = model(generated)

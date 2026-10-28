@@ -1,5 +1,6 @@
 """Module implementation."""
 import torch
+import torch.nn.functional as F
 
 
 def apply_temperature(logits: torch.Tensor, temperature: float = 1.0) -> torch.Tensor:
@@ -8,4 +9,4 @@ def apply_temperature(logits: torch.Tensor, temperature: float = 1.0) -> torch.T
     """
     if temperature <= 0:
         raise ValueError(f"temperature must be positive, got {temperature}")
-    return logits / temperature
+    return F.softmax(logits / temperature, dim=-1)

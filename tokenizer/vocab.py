@@ -51,3 +51,7 @@ class Vocabulary:
 
     def __contains__(self, token: str) -> bool:
         return token in self._token_to_id
+
+
+# The module-level encode/decode helpers share a vocabulary so their IDs round-trip.
+DEFAULT_VOCAB = Vocabulary()
